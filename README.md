@@ -41,23 +41,32 @@ Importer les données sous forme Genepop
 C <- read.genepop("RAD_dauphins_AV.gen", quiet = TRUE)
 C 				## to make sure the data look OK (nb of individuals and loci)
 ```
-Etape 1: estimer le nombre de cluster qui décrit le mieux la variablité génétique présente dans les données (ici, le max de cluster testés est 40)
+Etape 1: estimer le nombre de cluster qui décrit le mieux la variablité génétique présente dans les données (ici, le nb de PC testés est 40)
 ```R
-grp <- find.clusters(C, max.n.clust=40)
+grp <- find.clusters(C, n.pca=40)
 ```
-Cette fonction va créer une figure représentant le poucentage de variance *vs* le nombre de PC.
-De façon itérative, elle demande le nombre de PC retenues. On retient toutes les PC à ce stade.
-Ensuite est représenté les valeurs du BIC. On décide combien de Clusters (K) on retient (la plus faible valeur de BIC)
+Cette fonction va créer une figure représentant les valeurs du BIC. De façon itérative, on décide combien de Clusters (K) on retient (la plus faible valeur de BIC)
 
-
-
-function will plot percent variance explained vs nb of PCs and will ask how many PCs should be retained: retain all PCs at this step, then looking at the plot of BIC values, decide how many clusters are best (lowest BIC) and enter K chosen
+```R
 grp$size  		## will return how many individuals are assigned to each cluster
-write.table(head(grp$grp,374), file = "clusters.csv", sep = ",", col.names = NA)  ## to export membership to each cluster as csv file
-dapc1 <- dapc(C, grp$grp)    ## to perform DAPC, function will ask how many PCs to retain, choose 50 PCs because should retain about 80% for variance, then function asks how many discriminant functions should be examined, can keep all for small number of clusters
-dapc1   ### will return info about DAPC analysis
-write.table(dapc1$posterior, file="dapc1_MembershipProb", sep=",", row.names=T) ## pour faire une table des membership Prob
+#write.table(head(grp$grp,374), file = "clusters.csv", sep = ",", col.names = NA)  ## to export membership to each cluster as csv file
+```
+Maintenant on réalise la DAPC avec le nb de clusters choisis
+Il faut d'abord choisir le nb de PC retenue. Il faut en retenir suffisamment pour 80% de la variance soit expliquée. Ici 50
+Ensuite on choisi le nb de fonctions disciminantes. Lorsque que le nb de clusters est petit, on peut toutes les garder.
+```R
+dapc1 <- dapc(C, grp$grp)   
+dapc1
+#write.table(dapc1$posterior, file="dapc1_MembershipProb", sep=",", row.names=T) ## pour faire une table des membership Prob
+```
+On peut alors représenter les probablités d'assignation des individus aux différents clusters.
+```R
 compoplot(dapc1, posi="bottomright", txt.leg=paste("Cluster", 1:2), lab="", ncol=2, xlab="individuals") ## pour plotter les membership proba
+```
+<img width="685" height="467" alt="image" src="https://github.com/user-attachments/assets/9efbed57-d851-4e62-86aa-ec12cc3f454d" />
+
+- Que pouvez-vous déduire de ces analyses?
+- Quel a été l'intérêt de la DAPC à ce stade de l'analyse?
 
 
 
