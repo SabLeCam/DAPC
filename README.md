@@ -68,20 +68,47 @@ compoplot(dapc1, posi="bottomright", txt.leg=paste("Cluster", 1:2), lab="", ncol
 - Que pouvez-vous déduire de ces analyses?
 - Quel a été l'intérêt de la DAPC à ce stade de l'analyse?
 
+## DEUXIEME EXEMPLE: *Salmo salar*
+Ce jeu de données est issu de l'article suivant:
 
+Moore, J. S., Bourret, V., Dionne, M., Bradbury, I., O'Reilly, P., Kent, M., ... & Bernatchez, L. (2014). Conservation genomics of anadromous Atlantic salmon across its North American range: outlier loci identify the same patterns of population structure as neutral loci. Molecular Ecology, 23(23), 5680-5697. *Disponible sur le Moodle du cours.*
 
+Carte d'échantillonnage:
+<p float="left">
+<img width="284" height="398" alt="image" src="https://github.com/user-attachments/assets/6b4fcc84-6e97-4c01-9c45-6ac250f66081" />
+ <img width="400" height="160" alt="image" src="https://github.com/user-attachments/assets/e262476e-2034-4a4c-8cfd-20d47fe86313" />
+</p>
+Sources: Moore et al. 2010, © USFWS.
 
+Le jeu de données est constitué de 1,080 échantillons génotypes à 3092 SNP à l'aide d'une puce à SNP. Les échantillons ont été prélevés dans 49 sites. 
 
-library(adegenet)
+Importer les données
+
+```R
 C <- read.genepop(ncode = 3L, "Ssalar_SNPall_genepop_28Apr2014.gen", quiet = TRUE) ## to import your data from a Genepop file
 C 				## to make sure the data look OK (nb of individuals and loci)
 summary(C)      ## to look at some info about your data (nb of alleles, missing data, etc)
+```
+Estimer le nb de clusters
+```R
 grp <- find.clusters(C, max.n.clust=40)   ## function to find the number of clusters that best describe the variability in the data (here with a max nb of clusters tested of 40)
 ## function will plot percent variance explained vs nb of PCs and will ask how many PCs should be retained: retain all PCs at this step, then looking at the plot of BIC values, decide how many clusters are best (lowest BIC) and enter K chosen (K=9)
 grp$size  		## will return how many individuals are assigned to each cluster :  [1]  99 144  68  39 136 231 170  75  47  71
 write.table(head(grp$grp,374), file = "clusters.csv", sep = ",", col.names = NA)  ## to export membership to each cluster as csv file; 1080 is the number of inviduals
+```
+On a choisi K=9. On reéalise donc l'analyse avec K = 9
+```R
 dapc1 <- dapc(C, grp$grp)    ## to perform DAPC, function will ask how many PCs to retain : chose nb of PCs to retain about 80% for variance, then function asks how many discriminant functions should be examined, can keep all for small number of clusters (here 5)
 dapc1   ### will return info about DAPC analysis
-scatter(dapc1)			## will do scatterplot of all clusters
-write.table(dapc1$posterior, file="dapc1_MembershipProb", sep=",", row.names=T) ## pour faire une table des membership Prob
+```R
+scatter(dapc1, posi.da="topright")			## will do scatterplot of all clusters
+```
+<img width="685" height="467" alt="image" src="https://github.com/user-attachments/assets/ce2b7e3b-c9bc-4600-be0b-fc3f74e9acc3" />
+
+```R
+#write.table(dapc1$posterior, file="dapc1_MembershipProb", sep=",", row.names=T) ## pour faire une table des membership Prob
 compoplot(dapc1, posi="bottomright", txt.leg=paste("Cluster", 1:9), lab="", ncol=2, xlab="individuals") ## pour plotter les membership proba
+```
+<img width="685" height="467" alt="image" src="https://github.com/user-attachments/assets/3ca1813e-86da-46de-b527-5ab8c74b6cbc" />
+
+
