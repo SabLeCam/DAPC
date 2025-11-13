@@ -33,7 +33,7 @@ Nous allons réaliser une DAPC sur ce jeu de données.
 
 Nous allons utiliser le package *adegenet*
 ```R
-#install.packages("adegene")  # si necessaire
+#install.packages("adegenet")  # si necessaire
 library(adegenet)
 ```
 Importer les données sous forme Genepop
