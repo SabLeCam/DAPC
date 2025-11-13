@@ -111,4 +111,10 @@ compoplot(dapc1, posi="bottomright", txt.leg=paste("Cluster", 1:9), lab="", ncol
 ```
 <img width="685" height="467" alt="image" src="https://github.com/user-attachments/assets/3ca1813e-86da-46de-b527-5ab8c74b6cbc" />
 
+Pour des graphiques plus parlant
+```R
+devtools::install_github("zkamvar/ggcompoplot")
+library(ggcompoplot)
+```
+
 
